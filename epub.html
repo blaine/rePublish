@@ -1,0 +1,135 @@
+<html>
+  <head>
+
+    <link rel="stylesheet" type="text/css" media="screen" href="book.css" />
+    <script type="text/javascript" src="js/inflate.js"></script>
+    <script type="text/javascript" src="js/sax.js"></script>
+    <script type="text/javascript" src="js/zip.js"></script>
+    <script type="text/javascript" src="js/epub.js"></script>
+    <script type="text/javascript" src="js/base64.js"></script>
+    <script type="text/javascript" src="js/paginator.js"></script>
+    <script type="text/javascript" src="js/pageHandler.js"></script>
+
+    <!-- Hyphenation is currently [not] disabled. It shall return! -->
+    <script src="js/Hyphenator.js" type="text/javascript"></script>
+    <script src="js/patterns/en.js" type="text/javascript"></script>
+    <!-- -->
+
+    <script type="text/javascript">
+
+      var loadBook = function (epub) {
+
+        selector.style.display = 'none';
+        container.style.display = 'block';
+
+        ePub.open("epubs/" + epub, function (book) {
+
+          var te = document.getElementById('book_title');
+          te.textContent = book.title;
+
+          var ae = document.getElementById('author_heading');
+          ae.textContent = book.author;
+
+          var lc = document.getElementById('leftcontent'),
+              rc = document.getElementById('rightcontent'),
+              ln = document.getElementsByClassName('left pagenum')[0],
+              rn = document.getElementsByClassName('right pagenum')[0];
+
+          pageHandler = new PageHandler(book, [lc, rc], [ln, rn]);
+          pageHandler.display();
+
+          function handleArrowKeys(evt) {
+              evt = (evt) ? evt : ((window.event) ? event : null);
+              if (evt) {
+                  switch (evt.keyCode) {
+                      case 37:
+                          pageHandler.prevPage();
+                          break;    
+                      case 39:
+                          pageHandler.nextPage();
+                          break;    
+                   }
+              }
+          }
+
+          document.onkeyup = handleArrowKeys;
+        });
+      }
+    </script>
+  </head>
+
+  <body>
+    <div id="selector">
+      <div id="selectorContainer">
+        <div class="selection" onclick="loadBook('piedpiper.epub');">
+          <img src="covers/Pied_piper.jpg" alt="The Pied Piper of Hamelin"/>
+          <br/>The Pied Piper of Hamelin</div>
+        <div class="selection" onclick="loadBook('warofworlds.epub');">
+          <img src="covers/WarOfWorlds.jpg" alt="The War of the Worlds" />
+          <br/>The War of the Worlds</div>
+        <div class="selection" onclick="loadBook('flatland.epub');">
+          <img src="covers/flatland.jpg" alt="Flatland"/>
+          <br/>Flatland</div>
+        <div class="selection" onclick="loadBook('gulliverstravels.epub');">
+          <img src="covers/gulliver.jpg" alt="Gulliver's Travels"/>
+          <br/>Gulliver's Travels</div>
+        <div class="selection" onclick="loadBook('portraitoftheartist.epub');">
+          <img src="covers/Joyce.jpg" alt="Portrait of the Artist as a Young Man"/>
+          <br/>Portrait of the Artist<br/> as a Young Man</div>
+        <div class="selection" onclick="loadBook('wizardofoz.epub');">
+          <img src="covers/wizardofoz.jpg" alt="The Wonderful Wizard of Oz"/>
+          <br/>The Wonderful Wizard of Oz</div>
+        <div class="selection" onclick="loadBook('shelleypoetry.epub');">
+          <img src="covers/shelley.jpg" alt="Shelley's Poetry"/>
+          <br/>Shelley's Poetry</div>
+        <div class="selection" onclick="loadBook('fanniefarmer.epub');">
+          <img src="covers/Fannie.jpg" alt="The Fannie Farmer Cookbook" />
+          <br/>The Fannie Farmer Cookbook</div>
+        <div class="selection" onclick="loadBook('warandpeace.epub');">
+          <img src="covers/warandpeace.jpg" alt="War and Peace" />
+          <br/>War and Peace</div>
+        <div class="selection" onclick="loadBook('dracula.epub');">
+          <img src="covers/Dracula.jpg" alt="Dracula" />
+          <br/>Dracula</div>
+        <div class="selection" onclick="loadBook('faunaboreali.epub');">
+          <img src="covers/Fauna.jpg" alt="Fauna Boreali" />
+          <br/>Fauna Boreali</div>
+        <div class="selection" onclick="loadBook('huckleberry.epub');">
+          <img src="covers/Huck.jpg" alt="Huckleberry Finn" />
+          <br/>The Adventures of Huckleberry Finn</div>
+      </div>
+    </div>
+
+    <div id="container">
+      <div id="leftpage" class="page">
+        <div class="left header">
+          <span class="left pagenum"></span> &#183;
+          <h1 id="book_title"></h1>
+          <span class="discoverable">
+            <a href="javascript:pageHandler.prevPage()" title="Previous Page">&#8617;</a>
+          </span>
+        </div>
+        <div id="leftcontent" class="left content"></div>
+        <div class="left footer">
+          <span class="left pagenum"></span> &#183;
+          <h1 id="chapter_heading"></h1>
+        </div>
+      </div>
+
+      <div id="rightpage" class="page">
+        <div class="right header">
+          <span class="discoverable">
+            <a href="javascript:pageHandler.nextPage()" title="Next Page">&#8618;</a>
+          </span>
+          <h1 id="author_heading"></h1> &#183;
+          <span class="right pagenum"></span>
+        </div>
+        <div id="rightcontent" class="right content"></div>
+        <div class="right footer">
+          <h1></h1>&#183;
+          <span class="right pagenum"></span>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

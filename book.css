@@ -1,0 +1,240 @@
+body {
+  padding: 0;
+  margin: 0;
+}
+
+div#container {
+/*
+  width: 790px;  // (page.width * 2) + 40
+  height: 610px; // page.height + 82 */
+  width: 880px;
+  height: 650px;
+  margin: 0 auto;
+  padding: 0;
+  display: none;
+}
+
+div.page {
+  border: 1px solid black;
+  margin: 15px 0 10px;
+  /*
+  width: 375px;
+  height: 528px; */
+  width: 420px;
+  height: 630px;
+  background-color: #f7f6f4;
+}
+
+div.content {
+  height: 530px;
+}
+
+div#leftpage {
+  float: left;
+  margin-left: 15px;
+}
+div#rightpage {
+  float: right;
+  margin-right: 15px;
+}
+div#pagenav {
+  clear: both;
+  margin: 0 15px;
+  height: 40px;
+}
+div#pagenav * {
+  float: left;
+  height: 100%;
+  vertical-align: middle;
+}
+div#pagenav_left {
+  width: 15px;
+}
+div#pagenav_content {
+  width: 730px;
+  text-align: center;
+}
+div#pagenav_right {
+  width: 15px;
+  text-align: right;
+}
+
+div.content {
+  padding: 0.5em;
+  overflow: hidden;
+  font-family: Georgia, Serif;
+  text-align: justify;
+  text-justify: newspaper;
+}
+
+div.content pre {
+  line-height: 100%;
+}
+
+div.content * {
+  line-height: 150%;
+  font-size: 12px;
+}
+/*div.content * {
+  margin: 0 0 1em 0;
+  padding: 0;
+  font-size: 12px;
+  font-family: Serif, Georgia;
+  line-height: 150%;
+}*/
+
+div.content img {
+  max-width: 100%
+}
+
+div.header {
+  font-size: 80%;
+  vertical-align: middle;
+  position: relative;
+  margin-top: 1em;
+}
+div.header h1 {
+  font-size: 120%;
+  font-weight: normal;
+  font-style: italic;
+  font-variant: small-caps;
+  text-transform: lowercase;
+  display: inline;
+}
+div.header span.pagenum {
+  display: inline;
+}
+div.header span.discoverable a {
+  text-decoration: none;
+  color: #aaaaaa;
+}
+div.header span.discoverable {
+  display: none;
+}
+
+div.right.header {
+  text-align: right;
+  right: 0;
+}
+
+div.right.header span.pagenum {
+  margin-right: 0.75em;
+}
+
+div.left.header span.pagenum {
+  margin-left: 0.75em;
+}
+
+div.page:hover span.discoverable,
+div.page:hover span.discoverable a {
+  display: block;
+  position: absolute;
+  font-size: 400%;
+  top: 100px;
+  background-color: rgba(0,0,0,0.5);
+  line-height: 75%;
+  padding-top: 50px;
+  border-radius: 20px;
+  -webkit-border-radius: 20px;
+}
+
+div.page:hover div.left span.discoverable,
+div.page:hover div.left span.discoverable a {
+  left: 28px;
+}
+
+div.page:hover div.right span.discoverable,
+div.page:hover div.right span.discoverable a {
+  right: 31px;
+}
+div.page:hover span.discoverable a:hover {
+  color: #000000;
+}
+span.discoverable {
+  float: right;
+}
+
+div.footer {
+  display: none;
+}
+
+div.footer {
+  font-size: 80%;
+  vertical-align: middle;
+  position: relative;
+  bottom: 0;
+}
+div.footer h1 {
+  font-size: 120%;
+  font-weight: normal;
+  display: inline;
+  font-variant: small-caps;
+  text-transform: lowercase;
+}
+
+div.left {
+  margin-right: 1em;
+  margin-left: 1.5em;
+  padding: 0.5em;
+}
+div.left.content {
+  padding-top: 0.5em;
+}
+div.left.footer {
+  text-align: left;
+  left: 0;
+}
+
+div.right {
+  margin-left: 1em;
+  margin-right: 1.5em;
+  padding: 0.5em;
+}
+div.right.content {
+  padding-top: 0.5em;
+}
+div.right.footer {
+  text-align: right;
+  right: 0px;
+}
+
+div#selector {
+  background-color: rgba(55, 46, 74, 0.8);
+  position: absolute;
+  top: 20px;
+  height: 600px;
+  width: 800px;
+  left: 50%;
+  margin-left: -400px;
+  border-radius: 50px;
+  -webkit-border-radius: 50px;
+}
+
+div#selector #selectorContainer {
+  width: 100%;
+  height: 520px;
+  width: 740px;
+  margin: 40px;
+}
+
+div#selector .selection {
+  margin-right: 40px;
+  margin-bottom: 40px;
+  border-radius: 20px;
+  -webkit-border-radius: 20px;
+  float: left;
+  width: 145px;
+  height: 145px;
+  background-color: rgba(240, 230, 255, 0.3);
+  text-align: center;
+  font-size: 90%;
+}
+
+div#selector .selection:hover {
+  background-color: rgba(240, 230, 255, 0.6);
+}
+
+div#selector .selection img {
+  height: 80px;
+  margin: 20px auto 0;
+}

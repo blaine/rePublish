@@ -95,32 +95,58 @@ var Paginator = function (fromNode, toNode) {
       var newNode = shallowClone(element);
 
       if (newNode.nodeName === 'IMG') {
-        var loaded = false;
-
         emitCallback('image', newNode);
+
+        newNode.style.height = '';
+        newNode.style.width  = '';
+
+        var containerWidth = document.defaultView.
+                             getComputedStyle(currentNode, null).
+                             getPropertyValue('width').
+                             replace('px', '');
+
+        var scale = Math.min(containerWidth / newNode.width,
+                             realHeight / newNode.height);
+      //  console.log("I computed scale factor " + scale + " for a " + newNode.width + 'x' + newNode.height + " image.");
+        console.log(scale);
+
+        if (scale < 1) {
+          newNode.height = newNode.height * scale;
+          newNode.width  = newNode.width  * scale;
+        }
+
+      //  console.log("New size: " + newNode.width + "x" + newNode.height);
       }
 
       currentNode.appendChild(newNode);
 
-      // This is a total hack, for the time being. Basically, we need to
-      // continue on with the parse (without moving towards a totally heavy
-      // continuations based parsing model), so we have to be done the layout
-      // by the time we exit here.
-      if (newNode.nodeName === 'IMG') {
-        if (newNode.height === 0 && newNode.width === 0) {
-          newNode.height = 300;
-        }
-      }
-
-      // If we've exceeded our height now, it's probably due to an image.
+      // If we've exceeded our height now, it's potentially due to image(s).
       // Let's try shrinking them a little. If that doesn't work, we can
       // try moving this element to the next page.
-      var attempts = 0,
-          imgs = toNode.getElementsByTagName('IMG'),
-          l = imgs.length;
-      while (l > 0 && realHeight < realScrollHeight() && attempts++ < 2) {
+      if (realHeight < realScrollHeight()) {
+        var imgs = toNode.getElementsByTagName('IMG');
+
+        var origSizes = [],
+            l = imgs.length,
+            attempts = 0;
+
         for (var i = 0; i < l; i++) {
-          imgs[i].height = imgs[i].height * 0.9;
+          origSizes[i] = [imgs[i].height, imgs[i].width];
+        }
+
+        while (attempts++ < 3 && realHeight < realScrollHeight()) {
+          for (var i = 0; i < l; i++) {
+            imgs[i].height = imgs[i].height * 0.9;
+            imgs[i].width = imgs[i].width * 0.9;
+          }
+        }
+
+        // If it didn't work, reset the image sizes.
+        if (realHeight < realScrollHeight()) {
+          for (var i = 0, l = origSizes.length; i < l; i++) {
+            imgs[i].height = origSizes[i][0];
+            imgs[i].width  = origSizes[i][1];
+          }
         }
       }
 

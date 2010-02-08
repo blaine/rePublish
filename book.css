@@ -87,10 +87,6 @@ div.content * {
   line-height: 150%;
 }*/
 
-div.content img {
-  max-width: 100%
-}
-
 div.header {
   font-size: 80%;
   vertical-align: middle;

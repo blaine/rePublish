@@ -210,6 +210,16 @@ var PageHandler = function (book, displayElements, pageNumbers, chapterName) {
           var imgContent = img.content();
           var b64imgContent = Base64.encode(imgContent);
 
+          try {
+            var sz = getImageSize(imgContent);
+            if (sz) {
+              image.width = sz.width;
+              image.height = sz.height;
+            }
+          } catch (e) {
+            console.log('error finding image size for ' + image.getAttribute('src'));
+          }
+
           var imgType = img.name.substr(img.name.lastIndexOf('.') + 1, img.name.length);
           var dataUri = "data:image/" + imgType + ";base64," + b64imgContent;
           image.setAttribute('src', dataUri);

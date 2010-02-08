@@ -107,15 +107,11 @@ var Paginator = function (fromNode, toNode) {
 
         var scale = Math.min(containerWidth / newNode.width,
                              realHeight / newNode.height);
-      //  console.log("I computed scale factor " + scale + " for a " + newNode.width + 'x' + newNode.height + " image.");
-        console.log(scale);
 
         if (scale < 1) {
           newNode.height = newNode.height * scale;
           newNode.width  = newNode.width  * scale;
         }
-
-      //  console.log("New size: " + newNode.width + "x" + newNode.height);
       }
 
       currentNode.appendChild(newNode);

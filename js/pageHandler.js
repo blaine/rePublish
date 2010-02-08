@@ -217,7 +217,7 @@ var PageHandler = function (book, displayElements, pageNumbers, chapterName) {
               image.height = sz.height;
             }
           } catch (e) {
-            console.log('error finding image size for ' + image.getAttribute('src'));
+//            console.log('error finding image size for ' + image.getAttribute('src'));
           }
 
           var imgType = img.name.substr(img.name.lastIndexOf('.') + 1, img.name.length);

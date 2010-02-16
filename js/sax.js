@@ -58,6 +58,11 @@ var Sax = new function () {
 
         case 3:
           handler.textNode(node, function () { continuation(); });
+          break;
+
+        default:
+          continuation();
+          break;
       }
     };
 

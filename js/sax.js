@@ -1,40 +1,71 @@
+/*
+ 
+Recursive SAX-emulating parser.
+
+Traverses the DOM tree, triggering SAX events as it goes. Pretty minimal
+implementation thus far, ignoring all sorts of details but generally relying
+on the document to be already parsed and nodes fully formed (with
+attributes, etc) by the DOM parser.
+
+This is fully continuation-based, so the parser "pauses" until the
+continuation callback is called by the handler.
+
+Create a new parser like so:
+
+   var parser = new Sax.Parser(parentElement, eventHandler);
+
+and start parsing:
+
+   parser.parse();
+
+Events that are sent to the handler:
+
+  start()  - called at the start of the document (no continuation, synchronous).
+  finish() - called at the end of the document (no continuation, synchronous).
+
+  startElement(element continuation) - called when a new element is encountered.
+  endElement(element, continuation)  - called when an element is closed.
+
+  textNode(textElement, continuation) - called when a text element is encountered.
+                                        no endTextNode callback exists, since text
+                                        nodes are self-contained.
+*/
+
 var Sax = new function () {
 
   this.Parser = function (node, handler) {
 
-    var descend = function (node) {
-
-      // We only handle element nodes and text nodes. Everything else we just
-      // ignore, since (except for maybe CDATA, but that can be added as text
-      // if the need arises.
+    var descend = function (node, continuation) {
       switch (node.nodeType) {
+        case 1:
 
-        case 1: // Element Node
+          var childNodes = node.childNodes;
+          var childNodesLength = childNodes.length;
 
-          handler.startElement(node);
-
-          var ll = node.childNodes.length;
-          var i = 0;
-          while (ll--) {
-            descend(node.childNodes[i++], handler);
+          function buildContinuation(i, nextContinuation) {
+            if (i < childNodesLength) {
+              // We have more children to traverse.
+              descend(childNodes[i], function () { buildContinuation(i+1, nextContinuation); });
+            } else {
+              // No more children to traverse; continue on.
+              handler.endElement(node, function () { nextContinuation(); });
+            }
           }
 
-          handler.endElement(node);
+          handler.startElement(node, function () { buildContinuation(0, continuation); });
 
           break;
 
-        case 3: // Text Node
-
-          handler.textNode(node);
-          break;
-
+        case 3:
+          handler.textNode(node, function () { continuation(); });
       }
-    }
+    };
 
     this.parse = function () {
       handler.start();
-      descend(node);
-      handler.finish();
-    }
+      descend(node, function () {
+        handler.finish();
+      });
+    };
   }
 }();

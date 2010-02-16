@@ -1,5 +1,7 @@
 var Paginator = function (fromNode, toNode) {
 
+  var delay = 0;
+
   var callbacks = {};
   this.addCallback = function (cbk, cbkFunc) {
     if (callbacks[cbk]) {
@@ -16,6 +18,11 @@ var Paginator = function (fromNode, toNode) {
 
     for (var i = 0, l = cbks.length; i < l; i++) {
       cbks[i](arg);
+    }
+
+    if (cbk === 'page') {
+      // Give the browser some time to react if we've encountered a new page.
+      delay = 20;
     }
   }
 
@@ -81,13 +88,13 @@ var Paginator = function (fromNode, toNode) {
     }
 
     // Handle an opening element, e.g., <div>, <a>, etc.
-    this.startElement = function (element) {
+    this.startElement = function (element, c) {
 
       // We don't start on the first element, since the semantic here is
       // that we copy *contained* elements, not the container.
       if (!started) {
         started = true;
-        return;
+        return c();
       }
 
       // First, clone the node to be copied, fill in data URI if necesssary,
@@ -159,14 +166,18 @@ var Paginator = function (fromNode, toNode) {
       // and track it in the nodeHierarchy.
       currentNode = currentNode.lastChild;
       nodeHierarchy.push(currentNode);
+
+      return c();
     }
 
-    this.endElement = function (element) {
+    this.endElement = function (element, c) {
       currentNode = currentNode.parentNode;
       nodeHierarchy.pop();
+
+      return c();
     }
 
-    this.textNode = function (element) {
+    this.textNode = function (element, c) {
 
       var textChunks = element.textContent.split(/[\r\n ]/);
       try {
@@ -186,8 +197,7 @@ var Paginator = function (fromNode, toNode) {
       while (l--) {
         // Copy this chunk into it, and see if we've overrun our bbox.
         var nextChunk = Hyphenator.hyphenate(textChunks.shift(), 'en');
-//              textNode.textContent = Hyphenator.hyphenate(textNode.textContent + space + nextChunk, 'en');
-        textNode.textContent = textNode.textContent + space + nextChunk;
+        textNode.textContent += space + nextChunk;
         space = ' ';
 
         if (realHeight < realScrollHeight()) {
@@ -209,6 +219,11 @@ var Paginator = function (fromNode, toNode) {
           space = '';
         }
       }
+
+      var tmpDelay = delay;
+      delay = 0;
+
+      setTimeout(function () { c(); }, tmpDelay);
     };
   };
 
@@ -216,5 +231,4 @@ var Paginator = function (fromNode, toNode) {
   this.paginate = function () {
     new Sax.Parser(fromNode, nodeHandler).parse();
   };
-
 };

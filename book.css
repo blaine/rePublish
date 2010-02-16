@@ -239,3 +239,20 @@ div#selector .selection img {
   height: 80px;
   margin: 20px auto 0;
 }
+
+div#spinner {
+  background-color: rgba(55, 46, 74, 0.8);
+  position: absolute;
+  width: 100px;
+  height: 100px;
+  top: 100px;
+  left: 50%;
+  margin-left: -50px;
+  display: none;
+  border-radius: 20px;
+  -webkit-border-radius: 20px;
+}
+
+div#spinner img {
+  margin: 34px;
+}

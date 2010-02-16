@@ -81,21 +81,18 @@ var PageHandler = function (book, displayElements, pageNumbers, chapterName) {
       currPage = lastPage;
     };
 
-    this.nextPage = function () {
-      this.loadCallback();
-      if (!this.isLastPage()) {
-        currPage += displayElements.length;
-      }
-    };
+  var loadingIndicator;
+  var waiting = 0;
 
-    this.prevPage = function () {
-      this.loadCallback();
-      currPage = Math.max(0, currPage - displayElements.length);
-    }
+  var showLoadingIndicator = function (t) {
+    loadingIndicator = setTimeout( function () {
+      document.getElementById('spinner').style.display = 'block';
+    }, t);
+  };
 
-    this.addPage = function (page) {
-      pages.push(page);
-    };
+  var hideLoadingIndicator = function () {
+    clearTimeout(loadingIndicator);
+    document.getElementById('spinner').style.display = 'none';
   };
     
   this.display = function () {

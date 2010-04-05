@@ -17,6 +17,8 @@
     <script src="js/patterns/en.js" type="text/javascript"></script>
     <!-- -->
 
+    <script src="js/swipe.js"></script>
+
     <script type="text/javascript">
 
       var loadBook = function (epub) {
@@ -39,6 +41,8 @@
 
           pageHandler = new PageHandler(book, [lc, rc], [ln, rn]);
           pageHandler.display();
+
+          swipe(null, pageHandler);
 
           function handleArrowKeys(evt) {
               evt = (evt) ? evt : ((window.event) ? event : null);

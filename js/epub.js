@@ -27,6 +27,7 @@ var ePub = new function () {
     this.author = opf.creator;
 
     this.contents = opf.contents;
+    this.contentsByFile = opf.contentsByFile;
 
     this.toc = opf.toc.contents;
   };
@@ -75,13 +76,16 @@ var ePub = new function () {
     var itemrefs = spine.querySelectorAll('itemref');
     var il = itemrefs.length;
     var contents = [];
+    var contentsByFile = {};
     while (il--) {
       var id = itemrefs[il].getAttribute('idref');
       var file = this.getFileById(id);
       contents.unshift(file);
+      contentsByFile[file.name] = file;
     }
 
     this.contents = contents;
+    this.contentsByFile = contentsByFile;
 
     // Basic metadata. Needs some work.
     this.title  = opf.querySelector('title').textContent;
@@ -116,15 +120,17 @@ var ePub = new function () {
       }
 
       var point = {
-        title:   navpoints[i].querySelector('navLabel text').textContent,
-        content: content
+        title:    navpoints[i].querySelector('navLabel text').textContent,
+        fileName: file.name,
+        content:  content
       }
 
       if (!file) {
 //        console.log("Couldn't find a file named " + src + " for section named " + point.title);
       }
 
-      contents[navpoints[i].getAttribute('playOrder')] = point;
+      var pos = navpoints[i].getAttribute('playOrder') - 1;
+      contents[navpoints[i].getAttribute('playOrder')-1] = point;
     }
 
     this.contents = contents;

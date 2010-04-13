@@ -257,3 +257,17 @@ div#spinner {
 div#spinner img {
   margin: 34px;
 }
+
+div#contents {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  background-color: #eeeeff;
+  padding: 20px;
+  z-index: 100000;
+}
+
+div#contents a {
+  display: block;
+}

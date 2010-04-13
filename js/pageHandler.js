@@ -120,6 +120,11 @@ var PageHandler = function (book, displayElements, pageNumbers, chapterName) {
     }
   };
 
+  this.goToSection = function (secName) {
+    currSection = this.sectionsByName[secName];
+    sections[currSection].seekBeginning();
+  };
+
   /*
    * 
    *  The content collector. This uses the first displayElement as a template
@@ -189,6 +194,7 @@ var PageHandler = function (book, displayElements, pageNumbers, chapterName) {
 
     var section = new Section(func);
     this.sections.push(section);
+    this.sectionsByName[contentRef.name] = sections.length - 1;
 
     return section;
   };

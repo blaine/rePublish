@@ -40,6 +40,28 @@
               rn = document.getElementsByClassName('right pagenum')[0];
 
           pageHandler = new PageHandler(book, [lc, rc], [ln, rn]);
+
+          var contents = document.getElementById('contents');
+          for (var i = 0, l = book.toc.length; i < l; i++) {
+
+            // Sometimes navpoints aren't all covered, or they are done so in weird ways.
+            // try to be liberal about things.
+            if (book.toc[i] === undefined) continue;
+
+            var chapter = document.createElement('a');
+            var secName = book.toc[i].fileName;
+            chapter.setAttribute('href', '#section=' + secName);
+            chapter.textContent = book.toc[i].title;
+            chapter.onclick = function (secName) {
+              return function () {
+                pageHandler.goToSection(secName);
+                pageHandler.display();
+                contents.style.display = 'none';
+              }
+            }(secName);
+            contents.appendChild(chapter);
+          }
+
           pageHandler.display();
 
           swipe(null, pageHandler);
@@ -54,6 +76,9 @@
                       case 39:
                           pageHandler.nextPage();
                           break;    
+                      case 67:
+                          document.getElementById('contents').style.display = 'block';
+                          break;
                    }
               }
           }
@@ -68,6 +93,10 @@
     <div id="spinner">
       <img src="loader.gif" alt="Loading" />
     </div>
+
+    <div id="contents" style="display: none;">
+    </div>
+
     <div id="selector">
         <div style="text-align: center; font-family: Helvetica, sans; margin-top: 20px; background-color: rgba(255,255,255,0.3); line-height: 1.5em;">
           <span style="color: #0000dd">r</span><span style="color: #4444ee">ePub</span><span style="color: #0000dd">lish</span> &#8212; Pure-JavaScript ePub Reader

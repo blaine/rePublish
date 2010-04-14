@@ -9,6 +9,10 @@ var ePub = new function () {
       if (client.readyState == 4 && client.status == 200) {
         var archive = new Zip.Archive(client.responseText);
         callback(new ePub.Book(archive));
+      } else if (client.readyState == 4 && client.status < 400 && client.status > 299) {
+        alert('I need to look elsewhere for the book, but I don\'t know how!');
+      } else if (client.readyState == 4) {
+        alert('There was an error reading the book! I need CORS support to read books from other domains! (result code was ' + client.readyState + '/' + client.status);
       }
     };
     client.overrideMimeType('text/plain; charset=x-user-defined');

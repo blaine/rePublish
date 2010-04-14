@@ -23,12 +23,24 @@
 
     <script type="text/javascript">
 
+      function loadTheBook () {
+        var epuburl = document.getElementById('epuburl').value;
+        loadBook(epuburl);
+      }
+
       var loadBook = function (epub) {
 
         selector.style.display = 'none';
         container.style.display = 'block';
 
-        ePub.open("epubs/" + epub, function (book) {
+        var epubUrl;
+        if (epub.substr(0, 4) == 'http') {
+          epubUrl = epub;
+        } else {
+          epubUrl = "epubs/" + epub;
+        }
+
+        ePub.open(epubUrl, function (book) {
 
           var te = document.getElementById('book_title');
           te.textContent = book.title;

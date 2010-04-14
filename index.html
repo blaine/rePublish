@@ -2,6 +2,8 @@
   <head>
 
     <link rel="stylesheet" type="text/css" media="screen" href="book.css" />
+    <link rel="stylesheet" type="text/css" media="all and (orientation:portrait)" href="portrait.css" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
     <script type="text/javascript" src="js/inflate.js"></script>
     <script type="text/javascript" src="js/sax.js"></script>
     <script type="text/javascript" src="js/zip.js"></script>
@@ -39,7 +41,14 @@
               ln = document.getElementsByClassName('left pagenum')[0],
               rn = document.getElementsByClassName('right pagenum')[0];
 
-          pageHandler = new PageHandler(book, [lc, rc], [ln, rn]);
+          var pages;
+          if (window.orientation == 0 || window.orientation == 180) {
+            pages = [lc];
+          } else {
+            pages = [lc, rc];
+          }
+
+          pageHandler = new PageHandler(book, pages, [ln, rn]);
 
           var contents = document.getElementById('contents');
           for (var i = 0, l = book.toc.length; i < l; i++) {
@@ -84,6 +93,17 @@
           }
 
           document.onkeyup = handleArrowKeys;
+
+          // Set up an orientation handler
+          window.onorientationchange = function () {
+            if (window.orientation == 0 || window.orientation == 180) {
+              pageHandler.setPages([lc]);
+            } else {
+              pageHandler.setPages([lc,rc]);
+            }
+            pageHandler.display();
+          }
+
         });
       }
     </script>

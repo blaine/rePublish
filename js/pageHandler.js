@@ -26,10 +26,23 @@ var PageHandler = function (book, displayElements, pageNumbers, chapterName) {
   var self = this;
 
   self.sections = sections;
-  self.collectorBase = displayElements[0];
+  self.displayElements = displayElements;
+  self.collectorBase = self.displayElements[0];
+
+  this.sectionsByName = {};
 
   var loadingIndicator;
   var waiting = 0;
+
+  this.setPages = function (dspElements) {
+    // We need to reset the page numbering, since n>1 page layouts can have
+    // blank pages between chapters.
+    if (self.displayElements.length != dspElements.length) {
+      pageCounts = [0];
+    }
+
+    self.displayElements = dspElements;
+  }
 
   var showLoadingIndicator = function (t) {
     loadingIndicator = setTimeout( function () {
@@ -42,17 +55,25 @@ var PageHandler = function (book, displayElements, pageNumbers, chapterName) {
     document.getElementById('spinner').style.display = 'none';
   };
 
-  var showPageNumber = function (pageIdx, pageOffset) {
-
-    // Update page numbering. Needs a fix for entering sections midway through
-    // the book.
-    for (var i = pageCounts.length - 1, l = currSection; i < l; i++) {
-      if (sections[i].pageCount) {
-        pageCounts[i+1] = pageCounts[i] + sections[i].pageCount + (sections[i].pageCount % displayElements.length);
+  var recalculatePageNumbers = function () {
+    for (var i = 1, l = sections.length; i < l; i++) {
+      if (pageCounts[i] >= 0) {
+        continue;
+      } else {
+        var sectionOffset = sections[i - 1].pageCount + pageCounts[i - 1];
+        var roundingCorrection = sections[i - 1].pageCount % self.displayElements.length;
+        pageCounts[i] = sectionOffset + roundingCorrection;
       }
     }
+  };
+
+  var showPageNumber = function (pageIdx, pageOffset) {
 
     if (pageNumbers) {
+      if (!(pageCounts[currSection] >= 0)) {
+        recalculatePageNumbers();
+      }
+
       pageNumbers[pageIdx].textContent = pageCounts[currSection] + pageOffset;
     }
   };
@@ -65,10 +86,10 @@ var PageHandler = function (book, displayElements, pageNumbers, chapterName) {
 
     return function (page) {
       if (page === null) {
-        displayElements[pageIdx].innerHTML = '';
+        self.displayElements[pageIdx].innerHTML = '';
         showPageNumber(pageIdx, sections[currSection].currPage + 1);
       } else {
-        displayElements[pageIdx].innerHTML = page.innerHTML;
+        self.displayElements[pageIdx].innerHTML = page.innerHTML;
         showPageNumber(pageIdx, sections[currSection].currPage);
       }
 
@@ -94,7 +115,7 @@ var PageHandler = function (book, displayElements, pageNumbers, chapterName) {
       }
     }
 
-    for (var i = 0, l = displayElements.length; i < l; i++) {
+    for (var i = 0, l = self.displayElements.length; i < l; i++) {
       sections[currSection].nextPage(self.pageDisplayer(i));
     }
   };
@@ -103,19 +124,19 @@ var PageHandler = function (book, displayElements, pageNumbers, chapterName) {
     
     if (waiting > 0) return;
 
-    if (sections[currSection].currPage <= displayElements.length) {
+    if (sections[currSection].currPage <= self.displayElements.length) {
 
       if (currSection > 0) {
 
         sections[--currSection].seekEnd( function (sectionLength) {
-            var blanks = sectionLength % displayElements.length;
-            sections[currSection].rewind(displayElements.length - blanks);
+            var blanks = sectionLength % self.displayElements.length;
+            sections[currSection].rewind(self.displayElements.length - blanks);
             self.nextPage();
           }
         );
       }
     } else {
-      sections[currSection].rewind(displayElements.length * 2);
+      sections[currSection].rewind(self.displayElements.length * 2);
       self.nextPage();
     }
   };

@@ -148,14 +148,38 @@ var PageHandler = function (book, displayElements, pageNumbers, chapterName) {
     return function (contentChunk) {
       return function (addPageCallback, finishCallback) {
         var contentDoc = parser.parseFromString(contentChunk.content(), 'application/xml'),
+            contentHeader = contentDoc.getElementsByTagName('head')[0],
             contentContainer = contentDoc.getElementsByTagName('body')[0];
 
         var contentCollector = getNewCollector();
 
-        var paginator = new Paginator(contentContainer, contentCollector);
+        var styleContent;
+        for (var i = 0, l = contentHeader.children.length; i < l; i++) {
+          var elem = contentHeader.children[i];
+          
+          if (elem.nodeName == 'link' && elem.rel == 'stylesheet') {
+            if (!styleContent) styleContent = '';
+            styleContent += book.getFile(elem.getAttribute('href')).content();
+          } else if (elem.nodeName == 'style') {
+            if (!styleContent) styleContent = '';
+            styleContent += elem.textContent;
+          }
+        }
+
+        if (!document.getElementById('rePublishStyle')) {
+          var ssheet = document.createElement('style');
+          ssheet.id = 'rePublishStyle';
+          ssheet.textContent = styleContent;
+          document.getElementsByTagName('head')[0].appendChild(ssheet);
+        } else {
+          var ssheet = document.getElementById('rePublishStyle');
+          ssheet.textContent = styleContent;
+        }
+
+        var paginator = new Paginator(contentContainer, contentCollector, styleContent);
 
         paginator.addCallback('page', function (page) {
-          addPageCallback(page);
+          addPageCallback(page, contentHeader);
         });
 
         paginator.addCallback('finish', function () {

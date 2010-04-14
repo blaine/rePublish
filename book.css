@@ -2,6 +2,7 @@ body {
   padding: 0;
   margin: 0;
   overflow: hidden;
+  background-color: #eae6e0;
 }
 
 a {
@@ -12,7 +13,7 @@ div#container {
 /*
   width: 790px;  // (page.width * 2) + 40
   height: 610px; // page.height + 82 */
-  width: 880px;
+  width: 841px;
   height: 650px;
   margin: 0 auto;
   padding: 0;
@@ -20,9 +21,9 @@ div#container {
 }
 
 div.page {
-  border: 1px solid black;
   margin: 15px 0 10px;
   /*
+  border: 1px solid black;
   width: 375px;
   height: 528px; */
   width: 420px;
@@ -37,11 +38,15 @@ div.content {
 
 div#leftpage {
   float: left;
-  margin-left: 15px;
+/*  margin-left: 15px; */
+  margin-left: 0;
+  border-right: 1px solid #9a9690;
 }
+
 div#rightpage {
   float: right;
-  margin-right: 15px;
+/*  margin-right: 15px; */
+  margin-right: 0;
 }
 div#pagenav {
   clear: both;

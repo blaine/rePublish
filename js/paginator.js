@@ -1,4 +1,4 @@
-var Paginator = function (fromNode, toNode) {
+var Paginator = function (fromNode, toNode, styleContent) {
 
   var delay = 0;
 

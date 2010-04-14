@@ -101,7 +101,6 @@ var ePub = new function () {
     var ncxXML = opf.getFileById(tocId).content();
     var ncx = parser.parseFromString(ncxXML, 'application/xml');
 
-    gncx = ncx;
     // navmap > navpoint > navlabel > text(), navmap > navpoint > content into an array
     var navpoints = ncx.querySelectorAll('navMap navPoint');
     var contents = [];

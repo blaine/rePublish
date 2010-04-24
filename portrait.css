@@ -1,7 +1,17 @@
+* {
+  border: 1px dotted green;
+}
+
 .landscape {
   display: none;
 }
 
 div#container {
-  width: 440px;
+  width: 100%;
+}
+
+.page {
+  margin: 0;
+  -webkit-transform: scale(1.5);
+  -webkit-transform-origin: 0 0;
 }

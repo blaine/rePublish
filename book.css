@@ -10,64 +10,66 @@ a {
 }
 
 div#container {
-/*
-  width: 790px;  // (page.width * 2) + 40
-  height: 610px; // page.height + 82 */
-  width: 841px;
-  height: 650px;
-  margin: 0 auto;
-  padding: 0;
+  width: 912px; /* (page.width * 2) */
+  height: 656px; /* page.height + 20 */
   display: none;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
+  border: 0;
+  padding: 0;
+/*  -webkit-box-shadow: 2px 0 2px #000; */
+}
+
+div#backgroundDiv {
+  width: 952px;
+  height: 686px;
+  margin: auto;
+  position: absolute;
+  top: 50%;
+  bottom: 50%;
+  left: 0;
+  right: 0;
+  z-index: -1;
+  text-align: center;
+/*  background-image:
+url('images/tl.png'), url('images/tml.png'), url('images/tcl.png'), url('images/tcr.png'), url('images/tmr.png'), url('images/tr.png'),
+url('images/sl.png'), url('images/sr.png'),
+url('images/bl.png'), url('images/bml.png'), url('images/bcl.png'), url('images/bcr.png'), url('images/bmr.png'), url('images/br.png');
+
+  background-size: 56px 50px, 365px 50px, 55px 50px, 55px 50px, 365px 50px, 56px 50px,
+                   56px 586px, 56px 586px,
+                   56px 50px, 365px 50px, 55px 50px, 55px 50px, 365px 50px, 56px 50px;
+                   
+  background-repeat: no-repeat;
+  background-position: top left,    top    56px, top    421px, top    476px, top    531px, top right, 
+                       50px left,                                                          50px right,
+                       bottom left, bottom 56px, bottom 421px, bottom 476px, bottom 531px, bottom right;
+  background-color: #faf6f0; */
+}
+
+div#background canvas {
+  margin: auto;
 }
 
 div.page {
-  margin: 15px 0 10px;
-  /*
-  border: 1px solid black;
-  width: 375px;
-  height: 528px; */
-  width: 420px;
-  height: 630px;
-/*  background-color: #f7f6f4; */
-  background-color: #faf6f0;
-}
-
-div.content {
-  height: 530px;
+  float: left;
+  margin: 0;
 }
 
 div#leftpage {
-  float: left;
-/*  margin-left: 15px; */
-  margin-left: 0;
+  /* this is a hack. the positioning needs work. */
+  margin-left: 1.25em;
+/*  background-image: -webkit-gradient(linear, right top, left top, from(rgb(239, 235, 230)), color-stop(0.05, rgb(250, 246, 240))); */
 }
 
 div#rightpage {
-  float: right;
-/*  margin-right: 15px; */
-  margin-right: 0;
-  border-left: 1px solid #9a9690;
-}
-div#pagenav {
-  clear: both;
-  margin: 0 15px;
-  height: 40px;
-}
-div#pagenav * {
-  float: left;
-  height: 100%;
-  vertical-align: middle;
-}
-div#pagenav_left {
-  width: 15px;
-}
-div#pagenav_content {
-  width: 730px;
-  text-align: center;
-}
-div#pagenav_right {
-  width: 15px;
-  text-align: right;
+  /* this is a hack tied to the above left-page hack. the positioning needs work. */
+  margin-left: 0.25em;
+/*  background-image: -webkit-gradient(linear, left top, right top, from(rgb(239, 235, 230)), color-stop(0.05, rgb(250, 246, 240))); */
 }
 
 div.content {
@@ -84,21 +86,15 @@ div.content pre {
 
 div.content * {
   line-height: 150%;
-  font-size: 12px;
+  font-size: 1em;
 }
-/*div.content * {
-  margin: 0 0 1em 0;
-  padding: 0;
-  font-size: 12px;
-  font-family: Serif, Georgia;
-  line-height: 150%;
-}*/
 
 div.header {
   font-size: 80%;
   vertical-align: middle;
   position: relative;
   margin-top: 1em;
+  height: 1em;
 }
 div.header h1 {
   font-size: 120%;

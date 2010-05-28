@@ -2,12 +2,17 @@
   display: none;
 }
 
-div#container {
-  width: 100%;
+div#background {
+  width: 422px;
 }
 
-.page {
-  margin: 0;
+div#container {
+  width: 422px;
+  -webkit-transform: scale(1.5) translate(-10%,-10%);
+/*  -webkit-transform-origin: -25% -25%; */
+}
+
+/*
   -webkit-transform: scale(1.5);
   -webkit-transform-origin: 0 0;
-}
+} */

@@ -78,7 +78,26 @@ var PageHandler = function (book, displayElements, pageNumbers, chapterName) {
     }
   };
 
+  // TODO: This is a hard-coded hack, should be made modular.
+  this.pageRenderer = function () {
+    var totalPageCount = pageCounts.length;
+    for (var i = pageCounts.length - 1; i >= 0; i--) {
+      if (!pageCounts[i]) continue;
+
+      totalPageCount = pageCounts[i];
+      break;
+    }
+
+    var currPage = pageCounts[currSection] + sections[currSection].currPage;
+    if (!currPage) currPage = Math.min(currSection, totalPageCount - 1);
+    if (currPage >= totalPageCount) currPage = currPage - 1;
+
+    drawPct(currPage / totalPageCount);
+  };
+
   this.pageDisplayer = function (pageIdx) {
+
+    this.pageRenderer();
 
     // Expect to get called within 50 ms, or display the loading indicator.
     showLoadingIndicator(50);
@@ -106,7 +125,7 @@ var PageHandler = function (book, displayElements, pageNumbers, chapterName) {
 
     // Move to the next section if we're at the end of this one.
     if (sections[currSection].isLastPage()) {
-      if (sections[currSection + 1]) {
+      if (sections.length > currSection + 1) {
         currSection += 1;
         sections[currSection].seekBeginning();
       } else {
@@ -122,6 +141,7 @@ var PageHandler = function (book, displayElements, pageNumbers, chapterName) {
 
   this.prevPage = function () {
     
+    // Don't go back a page if we're already trying to do a page movement.
     if (waiting > 0) return;
 
     if (sections[currSection].currPage <= self.displayElements.length) {

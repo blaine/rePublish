@@ -278,17 +278,26 @@ var PageHandler = function (book, displayElements, pageNumbers, chapterName) {
     this.addSection(book.contents[i]);
   }
 
+var accum = 0;
+var naccum = 0;
   this.display = function () {
 
     var l = book.contents.length;
     function loadSection (n) {
       if (n < l) {
+var startTime = new Date();
         // Load section n, and schedule the next section to load in 100ms.
         sections[n].loadCallback( function (loaded) {
+var finishTime = new Date();
+console.log("Loading section " + n + " took " + (finishTime - startTime) + "ms");
+accum += finishTime - startTime;
+naccum++;
           if (loaded) {
-            setTimeout( function () { loadSection(n+1) }, 100);
+            setTimeout( function () { loadSection(n+1) }, 20);
           }
         });
+      } else {
+        console.log('average: ' + (accum / naccum));
       }
     }
 

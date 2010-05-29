@@ -102,7 +102,7 @@ var Paginator = function (fromNode, toNode, styleContent) {
       // and append it to our document.
       var newNode = shallowClone(element);
 
-      if (newNode.nodeName === 'IMG') {
+      if (newNode.nodeName === 'IMG' || newNode.nodeName === 'image') {
         emitCallback('image', newNode);
 
         newNode.style.height = '';

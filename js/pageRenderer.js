@@ -1,9 +1,7 @@
 var drawLeftPage = function (canvas,
                              center, top, width, height,
                              curlRadiusX, curlRadiusY,
-                             vOffset, hOffset, maxCurlRadiusY) {
-
-   canvas.save();
+                             vOffset, hOffset, maxCurlRadiusY, fill) {
 
    // Left Page
    var bottom = top + height,
@@ -43,30 +41,33 @@ var drawLeftPage = function (canvas,
                        center, top + vOffset + curlRadiusY / 2,
                        center, top + curlRadiusY + vOffset);
 
-  var strokeGradient = canvas.createLinearGradient(left, bottom, center, 0);
-  strokeGradient.addColorStop(0, 'rgb(194, 190, 184)');
-  strokeGradient.addColorStop(1 - (curlRadiusX / width * 0.5), 'rgb(234, 230, 224)');
-  canvas.strokeStyle = strokeGradient;
-
-  var fillGradient = canvas.createLinearGradient(left, 0, center, 0 + curlRadiusX / 8);
-  fillGradient.addColorStop(1 - (curlRadiusX / width * 0.8), 'rgb(250, 246, 240)');
-  fillGradient.addColorStop(1, 'rgb(234, 230, 224)');
-  canvas.fillStyle = fillGradient;
-
+  if (fill) {
+    var strokeGradient = canvas.createLinearGradient(left, bottom, center, 0);
+    strokeGradient.addColorStop(0, 'rgb(194, 190, 184)');
+    strokeGradient.addColorStop(1 - (curlRadiusX / width * 0.5), 'rgb(234, 230, 224)');
+    canvas.strokeStyle = strokeGradient; 
+  } else {
+    canvas.strokeStyle = 'rgb(194,190,184)'
+  }
   canvas.stroke();
-  canvas.fill();
+
+  if (fill) {
+    var fillGradient = canvas.createLinearGradient(left, 0, center, 0 + curlRadiusX / 8);
+    fillGradient.addColorStop(1 - (curlRadiusX / width * 0.8), 'rgb(250, 246, 240)');
+    fillGradient.addColorStop(1, 'rgb(234, 230, 224)');
+    canvas.fillStyle = fillGradient;
+    canvas.fill();
+  }
+
 
   canvas.closePath();
 
-  canvas.restore();
 }
 
 var drawRightPage = function (canvas,
                               center, top, width, height,
                               curlRadiusX, curlRadiusY,
-                              vOffset, hOffset, maxCurlRadiusY) {
-
-  canvas.save();
+                              vOffset, hOffset, maxCurlRadiusY, fill) {
 
   // Left Page
   var bottom = top + height,
@@ -106,22 +107,25 @@ var drawRightPage = function (canvas,
                        center, top + vOffset + curlRadiusY / 2,
                        center, top + curlRadiusY + vOffset);
 
-  var strokeGradient = canvas.createLinearGradient(right, bottom, center, 0);
-  strokeGradient.addColorStop(0, 'rgb(194, 190, 184)');
-  strokeGradient.addColorStop(1 - (curlRadiusX / width * 0.5), 'rgb(234, 230, 224)');
-  canvas.strokeStyle = strokeGradient;
-
-  var fillGradient = canvas.createLinearGradient(right, 0, center, 0);
-  fillGradient.addColorStop(1 - (curlRadiusX / (width * 0.8)), 'rgb(250, 246, 240)');
-  fillGradient.addColorStop(1, 'rgb(234, 230, 224)');
-  canvas.fillStyle = fillGradient;
-
+  if (fill) {
+    var strokeGradient = canvas.createLinearGradient(right, bottom, center, 0);
+    strokeGradient.addColorStop(0, 'rgb(194, 190, 184)');
+    strokeGradient.addColorStop(1 - (curlRadiusX / width * 0.5), 'rgb(234, 230, 224)');
+    canvas.strokeStyle = strokeGradient;
+  } else {
+    canvas.strokeStyle = 'rgb(194,190,184)'
+  }
   canvas.stroke();
-  canvas.fill();
+
+  if (fill) {
+    var fillGradient = canvas.createLinearGradient(right, 0, center, 0);
+    fillGradient.addColorStop(1 - (curlRadiusX / (width * 0.8)), 'rgb(250, 246, 240)');
+    fillGradient.addColorStop(1, 'rgb(234, 230, 224)');
+    canvas.fillStyle = fillGradient;
+    canvas.fill();
+  }
 
   canvas.closePath();
-
-  canvas.restore();
 }
 
 function drawPct(pct) {
@@ -140,18 +144,20 @@ function drawPct(pct) {
 
   for (var i = thickness; i >= Math.ceil(pct * thickness); i--) {
         var x = Math.max(1, i);
+        var fill = i == Math.ceil(pct*thickness);
         drawRightPage(context,
                       width, 0, width - Math.log(thickness + 1) * 10, height - Math.log(thickness) * 6,
                       Math.log((thickness - x) + 2) * 10, Math.log((thickness - x) + 2) * 4, Math.log(x + 2) * 4, Math.log(x + 2) * 8,
-                      Math.log(thickness + 2) * 4);
+                      Math.log(thickness + 2) * 4, fill);
   }
 
   for (var i = 0; i <= Math.ceil(pct*thickness); i++) {
         var x = Math.max(1, thickness - i);
+        var fill = i == Math.ceil(pct*thickness);
         drawLeftPage(context,
                      width, 0, width - Math.log(thickness + 1) * 10, height - Math.log(thickness) * 6,
                      Math.log((thickness - x) + 2) * 10, Math.log((thickness - x) + 2) * 4,
                      Math.log(x + 2) * 4, Math.log(x + 2) * 8,
-                     Math.log(thickness + 2) * 4);
+                     Math.log(thickness + 2) * 4, fill);
   }
 }

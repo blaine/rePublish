@@ -229,7 +229,15 @@ var PageHandler = function (book, displayElements, pageNumbers, chapterName) {
         });
 
         paginator.addCallback('image', function (image) {
-          var img = book.getFile(image.getAttribute('src'));
+          var img;
+          if (image.getAttribute('src')) {
+            var img = book.getFile(image.getAttribute('src'));
+          } else {
+            var img = book.getFile(image.getAttribute('xlink:href'));
+          }
+
+          if (!img) return;
+          
           var imgContent = img.content();
           var b64imgContent = Base64.encode(imgContent);
 

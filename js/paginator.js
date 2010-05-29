@@ -31,9 +31,10 @@ var Paginator = function (fromNode, toNode, styleContent) {
                    getComputedStyle(toNode, null).
                    getPropertyValue('height').
                    replace('px', '');
+  var maxScrollHeight = toNode.offsetHeight - realHeight;
 
   var realScrollHeight = function () {
-    return toNode.scrollHeight - (toNode.offsetHeight - realHeight);
+    return toNode.scrollHeight - maxScrollHeight;
   };
 
   var nodeHandler = new function() {
@@ -179,11 +180,26 @@ var Paginator = function (fromNode, toNode, styleContent) {
 
     this.textNode = function (element, c) {
 
-      var textChunks = element.textContent.split(/[\r\n ]/);
+      var rawHyphenatedText;
       try {
-        textChunks = decodeURIComponent(escape(element.textContent)).split(/[\r\n ]/);
+        rawHyphenatedText = Hyphenator.hyphenate(decodeURIComponent(escape(element.textContent)), 'en');
       } catch (e) {
+        rawHyphenatedText = Hyphenator.hyphenate(element.textContent, 'en');
       }
+      var newTextNode = currentNode.ownerDocument.createTextNode(rawHyphenatedText);
+
+      currentNode.appendChild(newTextNode);
+
+      if (realHeight >= realScrollHeight()) {
+        // We're still safe. Call the callback! Continue! Do not dawdle!
+        var tmpDelay = delay;
+        delay = 0;
+        setTimeout(function continueFast () { c(); }, tmpDelay);
+        return;
+      }
+      // That didn't work. Try the slow approach.
+
+      currentNode.removeChild(newTextNode);
 
       // Add a text node to the end of currentNode if there isn't already one there.
       if (!currentNode.lastChild || currentNode.lastChild.nodeType != 3) {
@@ -193,10 +209,75 @@ var Paginator = function (fromNode, toNode, styleContent) {
       var textNode = currentNode.lastChild,
           space = '';
 
+      var incomingText;
+      try {
+        incomingText = Hyphenator.hyphenate(decodeURIComponent(escape(element.textContent)), 'en');
+      } catch (e) {
+        incomingText = Hyphenator.hyphenate(element.textContent, 'en');
+      }
+
+      var l = incomingText.length;
+
+      var fitText = function (start, sliceLength) {
+
+        if (start === l) {
+          var tmpDelay = delay;
+          delay = 0;
+
+          setTimeout(function continueSlow () { c(); }, tmpDelay);
+          return;
+        }
+
+
+        if (sliceLength <= 0) {
+	  // If we're here, it means we don't have any more text in the current
+	  // set of chunks that will fit on the page. Trigger a new page!
+
+          emitCallback('page', toNode.cloneNode(true));
+
+          incomingText = incomingText.substr(start, l - start);
+          l = incomingText.length;
+
+          // reset our destination collector to the current hierarchy.
+          reset();
+
+          // Now that we've reset the currentNode (which is prepped with
+          // a blank text node, we need to point our text node at that.
+          textNode = currentNode.lastChild;
+
+          // finally, start the process again.
+          return fitText(start, l);
+        }
+
+        // Copy a slice of text into the text node. Hopefully it fits.
+        var testText = ((start == 0) ? '' : ' ') + incomingText.substr(start, sliceLength);
+
+        textNode.textContent += testText;
+
+        if (realHeight < realScrollHeight()) {
+          // Reset the text and try again with a more conservative sliceLength.
+          textNode.textContent = textNode.textContent.substr(0, sliceLength + ((start == 0) ? 0 : 1));
+          fitText(start, incomingText.lastIndexOf(' ', Math.floor(sliceLength / 2)));
+        } else {
+	  // We only get here by overrunning our bbox, so keep looking for the
+	  // floor.
+          fitText(sliceLength, incomingText.lastIndexOf(' ', Math.floor(sliceLength / 2)));
+        }
+      }
+
+//      return fitText(0, l);
+
+      var textChunks;
+      try {
+        textChunks = Hyphenator.hyphenate(decodeURIComponent(escape(element.textContent)), 'en').split(/[\r\n ]/);
+      } catch (e) {
+        textChunks = element.textContent.split(/[\r\n ]/);
+      }
+
       var l = textChunks.length;
       while (l--) {
         // Copy this chunk into it, and see if we've overrun our bbox.
-        var nextChunk = Hyphenator.hyphenate(textChunks.shift(), 'en');
+        var nextChunk = textChunks.shift();
         textNode.textContent += space + nextChunk;
         space = ' ';
 
@@ -223,7 +304,7 @@ var Paginator = function (fromNode, toNode, styleContent) {
       var tmpDelay = delay;
       delay = 0;
 
-      setTimeout(function () { c(); }, tmpDelay);
+      setTimeout(function continueSlow () { c(); }, tmpDelay);
     };
   };
 
